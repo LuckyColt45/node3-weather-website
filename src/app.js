@@ -20,14 +20,14 @@ app.use(express.static(publicDirectoryPath));
 app.get("", (req, res) => {
   res.render("index", {
     title: "Weather",
-    name: "LC45",
+    name: "LC45"
   });
 });
 
 app.get("/about", (req, res) => {
   res.render("about", {
     title: "About Robot",
-    name: "LC45",
+    name: "LC45"
   });
 });
 
@@ -35,45 +35,43 @@ app.get("/help", (req, res) => {
   res.render("help", {
     title: "Help",
     message: "Some help message",
+    name: "LC45"
   });
 });
 
 app.get("/weather", (req, res) => {
   if (!req.query.address) {
     return res.send({
-      error: "You must provide an address",
+      error: "You must provide an address"
     });
   }
 
-  geocode(
-    req.query.address,
-    (error, { latitude, longitude, location } = {}) => {
+  geocode(req.query.address, (error, { latitude, longitude, location } = {}) => {
+    if (error) {
+      return res.send({ error });
+    }
+
+    forecast(latitude, longitude, (error, forecastData) => {
       if (error) {
-        return res.send({ error });
+        return res.send(error);
       }
 
-      forecast(latitude, longitude, (error, forecastData) => {
-        if (error) {
-          return res.send(error);
-        }
-
-        res.send({
-          forecast: forecastData,
-          location,
-        });
+      res.send({
+        forecast: forecastData,
+        location
       });
-    }
-  );
+    });
+  });
 });
 
 app.get("/products", (req, res) => {
   if (!req.query.search) {
     return res.send({
-      error: "You must provide a search term",
+      error: "You must provide a search term"
     });
   }
   res.send({
-    products: [],
+    products: []
   });
 });
 
@@ -81,7 +79,7 @@ app.get("/help/*", (req, res) => {
   res.render("404", {
     title: "404",
     name: "LC45",
-    message: "Help article not found",
+    message: "Help article not found"
   });
 });
 
@@ -89,7 +87,7 @@ app.get("*", (req, res) => {
   res.render("404", {
     title: "404",
     name: "LC45",
-    message: "Page not found",
+    message: "Page not found"
   });
 });
 
